@@ -18,6 +18,11 @@ export function validateApiConfiguration(apiConfiguration?: ApiConfiguration): s
 					return "You must provide a valid API key or choose a different provider."
 				}
 				break
+			case "openai":
+				if (!apiConfiguration.modelName || !apiConfiguration.baseUrl) {
+					return "You must provide a valid base Url and model Name"
+				}
+				break
 		}
 	}
 	return undefined

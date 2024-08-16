@@ -69,6 +69,7 @@ const ApiOptions: React.FC<ApiOptionsProps> = ({ showModelOptions, apiConfigurat
 					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
 					<VSCodeOption value="bedrock">AWS Bedrock</VSCodeOption>
 					<VSCodeOption value="openrouter">OpenRouter</VSCodeOption>
+					<VSCodeOption value="openai">Open AI</VSCodeOption>
 				</VSCodeDropdown>
 			</div>
 
@@ -117,6 +118,45 @@ const ApiOptions: React.FC<ApiOptionsProps> = ({ showModelOptions, apiConfigurat
 						<span style={{ color: "var(--vscode-errorForeground)" }}>
 							(<span style={{ fontWeight: 500 }}>Note:</span> OpenRouter support is experimental and may
 							not work well with large files.)
+						</span>
+					</p>
+				</div>
+			)}
+
+			{selectedProvider === "openai" && (
+				<div>
+					<VSCodeTextField
+						value={apiConfiguration?.baseUrl || "http://localhost:11434/v1"}
+						style={{ width: "100%" }}
+						onInput={handleInputChange("baseUrl")}
+						placeholder="Enter Base Url...">
+						<span style={{ fontWeight: 500 }}>OpenAI Base Url</span>
+					</VSCodeTextField>
+					<VSCodeTextField
+						value={apiConfiguration?.modelName || "llama3.1"}
+						style={{ width: "100%" }}
+						onInput={handleInputChange("modelName")}
+						placeholder="Enter Model Name...">
+						<span style={{ fontWeight: 500 }}>OpenAI Model Name</span>
+					</VSCodeTextField>
+					<VSCodeTextField
+						value={apiConfiguration?.openaiApiKey || ""}
+						style={{ width: "100%" }}
+						onInput={handleInputChange("openaiApiKey")}
+						placeholder="Enter API Key...">
+						<span style={{ fontWeight: 500 }}>OpenAI API Key</span>
+					</VSCodeTextField>
+					<p
+						style={{
+							fontSize: "12px",
+							marginTop: "5px",
+							color: "var(--vscode-descriptionForeground)",
+						}}>
+						This key is stored locally and only used to make API requests from this extension.
+						{" "}
+						<span style={{ color: "var(--vscode-errorForeground)" }}>
+							(<span style={{ fontWeight: 500 }}>Note:</span> OpenAI support is experimental and may
+							not work well.)
 						</span>
 					</p>
 				</div>
@@ -299,6 +339,8 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration) {
 			return getProviderData(openRouterModels, openRouterDefaultModelId)
 		case "bedrock":
 			return getProviderData(bedrockModels, bedrockDefaultModelId)
+		case "openai":
+			return getProviderData(anthropicModels, anthropicDefaultModelId)
 	}
 }
 

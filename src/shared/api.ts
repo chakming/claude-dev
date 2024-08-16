@@ -1,8 +1,11 @@
-export type ApiProvider = "anthropic" | "openrouter" | "bedrock"
+export type ApiProvider = "anthropic" | "openrouter" | "bedrock" | "openai"
 
 export interface ApiHandlerOptions {
+	baseUrl?: string // openai
+	modelName?: string // openai
 	apiModelId?: ApiModelId
 	apiKey?: string // anthropic
+	openaiApiKey?: string // openai
 	openRouterApiKey?: string
 	awsAccessKey?: string
 	awsSecretKey?: string
@@ -25,7 +28,7 @@ export interface ModelInfo {
 	cacheReadsPrice?: number
 }
 
-export type ApiModelId = AnthropicModelId | OpenRouterModelId | BedrockModelId
+export type ApiModelId = AnthropicModelId | OpenRouterModelId | BedrockModelId | string
 
 // Anthropic
 // https://docs.anthropic.com/en/docs/about-claude/models

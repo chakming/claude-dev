@@ -10,8 +10,10 @@ https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default
 https://github.com/KumarVariable/vscode-extension-sidebar-html/blob/master/src/customSidebarViewProvider.ts
 */
 
-type SecretKey = "apiKey" | "openRouterApiKey" | "awsAccessKey" | "awsSecretKey"
+type SecretKey = "apiKey" | "openRouterApiKey" | "awsAccessKey" | "awsSecretKey" | "openaiApiKey"
 type GlobalStateKey =
+    | "baseUrl"
+    | "modelName"
 	| "apiProvider"
 	| "apiModelId"
 	| "awsRegion"
@@ -255,17 +257,23 @@ export class ClaudeDevProvider implements vscode.WebviewViewProvider {
 					case "apiConfiguration":
 						if (message.apiConfiguration) {
 							const {
+								baseUrl,
+								modelName,
 								apiProvider,
 								apiModelId,
 								apiKey,
+								openaiApiKey,
 								openRouterApiKey,
 								awsAccessKey,
 								awsSecretKey,
 								awsRegion,
 							} = message.apiConfiguration
+							await this.updateGlobalState("baseUrl", baseUrl)
+							await this.updateGlobalState("modelName", modelName)
 							await this.updateGlobalState("apiProvider", apiProvider)
 							await this.updateGlobalState("apiModelId", apiModelId)
 							await this.storeSecret("apiKey", apiKey)
+							await this.storeSecret("openaiApiKey", openaiApiKey)
 							await this.storeSecret("openRouterApiKey", openRouterApiKey)
 							await this.storeSecret("awsAccessKey", awsAccessKey)
 							await this.storeSecret("awsSecretKey", awsSecretKey)
@@ -427,7 +435,10 @@ export class ClaudeDevProvider implements vscode.WebviewViewProvider {
 		const [
 			storedApiProvider,
 			apiModelId,
+			baseUrl,
+			modelName,
 			apiKey,
+			openaiApiKey,
 			openRouterApiKey,
 			awsAccessKey,
 			awsSecretKey,
@@ -438,7 +449,10 @@ export class ClaudeDevProvider implements vscode.WebviewViewProvider {
 		] = await Promise.all([
 			this.getGlobalState("apiProvider") as Promise<ApiProvider | undefined>,
 			this.getGlobalState("apiModelId") as Promise<ApiModelId | undefined>,
+			this.getGlobalState("baseUrl") as Promise<string | undefined>,
+			this.getGlobalState("modelName") as Promise<string | undefined>,
 			this.getSecret("apiKey") as Promise<string | undefined>,
+			this.getSecret("openaiApiKey") as Promise<string | undefined>,
 			this.getSecret("openRouterApiKey") as Promise<string | undefined>,
 			this.getSecret("awsAccessKey") as Promise<string | undefined>,
 			this.getSecret("awsSecretKey") as Promise<string | undefined>,
@@ -464,9 +478,12 @@ export class ClaudeDevProvider implements vscode.WebviewViewProvider {
 
 		return {
 			apiConfiguration: {
+				baseUrl,
+				modelName,
 				apiProvider,
 				apiModelId,
 				apiKey,
+				openaiApiKey,
 				openRouterApiKey,
 				awsAccessKey,
 				awsSecretKey,

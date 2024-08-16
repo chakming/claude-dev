@@ -38,6 +38,7 @@ const App: React.FC = () => {
 				setVersion(message.state!.version)
 				const hasKey =
 					message.state!.apiConfiguration?.apiKey !== undefined ||
+					message.state!.apiConfiguration?.openaiApiKey !== undefined ||
 					message.state!.apiConfiguration?.openRouterApiKey !== undefined ||
 					message.state!.apiConfiguration?.awsAccessKey !== undefined
 				setShowWelcome(!hasKey)
